@@ -1,0 +1,26 @@
+#!/bin/bash
+ 
+options="Shutdown\nReboot\nLogout\nSuspend\nLock"
+ 
+chosen=$(echo -e "$options" | dmenu -i -p "Power Menu:")
+ 
+case $chosen in
+    "Shutdown")
+        systemctl poweroff
+        ;;
+    "Reboot")
+        systemctl reboot
+        ;;
+    "Logout")
+        # For dwm
+        killall dwm
+        ;;
+    "Suspend")
+        systemctl suspend
+        ;;
+    "Lock")
+        slock
+        ;;
+esac
+
+

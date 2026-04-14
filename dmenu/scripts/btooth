@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+
+# bt-manage-dmenu.sh
+# choose device → choose action (connect / disconnect / forget / pair if needed)
+
+set -euo pipefail
+
+DMENU="${DMENU_CMD:-dmenu -i -l 12}"
+
+command -v bluetoothctl >/dev/null 2>&1 || {
+  printf 'bluetoothctl not found\n' >&2
+  exit 1
+}
+
+bluetoothctl power on >/dev/null 2>&1 || true
+
+is_connected() { bluetoothctl info "$1" 2>/dev/null | grep -q '^Connected: yes$'; }
+is_paired()    { bluetoothctl info "$1" 2>/dev/null | grep -q '^Paired: yes$'; }
+
+# short scan
+bluetoothctl scan on >/dev/null 2>&1 &
+scan_pid=$!
+sleep 4
+kill "$scan_pid" >/dev/null 2>&1 || true
+
+devices="$(
+  bluetoothctl devices | while read -r _ mac name_rest; do
+    [ -n "${mac:-}" ] || continue
+    name="${name_rest:-Unknown}"
+
+    status=""
+    is_connected "$mac" && status="$status connected"
+    is_paired "$mac" && status="$status paired"
+    [ -z "$status" ] && status=" available"
+
+    printf '%s | %s |%s\n' "$mac" "$name" "$status"
+  done
+)"
+
+[ -n "${devices:-}" ] || exit 1
+
+device_choice="$(printf '%s\n' "$devices" | eval "$DMENU -p 'Bluetooth device:'")"
+[ -n "${device_choice:-}" ] || exit 0
+
+mac="${device_choice%% | *}"
+
+# build actions
+actions="connect disconnect forget"
+if ! is_paired "$mac"; then
+  actions="pair $actions"
+fi
+
+action="$(printf '%s\n' $actions | eval "$DMENU -p 'Action:'")"
+[ -n "${action:-}" ] || exit 0
+
+case "$action" in
+  pair)
+    bluetoothctl pair "$mac"
+    ;;
+  connect)
+    is_paired "$mac" || bluetoothctl pair "$mac"
+    bluetoothctl trust "$mac" >/dev/null 2>&1 || true
+    bluetoothctl connect "$mac"
+    ;;
+  disconnect)
+    bluetoothctl disconnect "$mac"
+    ;;
+  forget)
+    bluetoothctl remove "$mac"
+    ;;
+esac

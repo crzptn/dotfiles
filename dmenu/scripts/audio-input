@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+# pick-audio-output.sh
+# choose an audio output with dmenu, set it as default, move current streams
+
+set -euo pipefail
+
+DMENU_CMD="${DMENU_CMD:-dmenu -i -l 10 -p 'Audio output:'}"
+
+# get current default sink name
+default_sink="$(pactl info | awk -F': ' '/Default Sink:/ {print $2}')"
+
+# build menu:
+# <sink_name> | <description> [default]
+menu="$(
+  pactl list short sinks | while read -r id name rest; do
+    desc="$(pactl list sinks | awk -v sink="$name" '
+      $1 == "Name:" && $2 == sink {found=1}
+      found && $1 == "Description:" {
+        sub(/^Description: /, "")
+        print
+        exit
+      }
+    ')"
+
+    [ "$name" = "$default_sink" ] && mark=" [default]" || mark=""
+    printf '%s | %s%s\n' "$name" "${desc:-$name}" "$mark"
+  done
+)"
+
+choice="$(printf '%s\n' "$menu" | eval "$DMENU_CMD")"
+[ -z "${choice:-}" ] && exit 0
+
+sink_name="${choice%% | *}"
+
+# set new default sink
+pactl set-default-sink "$sink_name"
+
+# move all current playback streams to selected sink
+pactl list short sink-inputs | while read -r input_id _; do
+  pactl move-sink-input "$input_id" "$sink_name"
+done

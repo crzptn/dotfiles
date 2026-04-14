@@ -1,0 +1,3 @@
+.mode table
+.header on
+.separator "|"

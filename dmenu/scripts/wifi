@@ -1,0 +1,12 @@
+#!/bin/bash
+ 
+# Get list of WiFi networks
+nmcli dev wifi rescan
+
+networks=$(nmcli -t -f SSID dev wifi list | sort -u)
+ 
+selected=$(echo "$networks" | dmenu -i -l 10 -p "Select WiFi:")
+ 
+if [ -n "$selected" ]; then
+    nmcli device wifi connect "$selected"
+fi

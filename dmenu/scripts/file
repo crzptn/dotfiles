@@ -1,0 +1,24 @@
+#!/bin/bash
+ 
+# Start in home directory
+dir="$HOME"
+ 
+while true; do
+    # List directories and files
+    choice=$(ls -1p "$dir" | dmenu -i -l 20 -p "Browse: $dir")
+    
+    # Exit if cancelled
+    [ -z "$choice" ] && exit
+    
+    # Build full path
+    fullpath="$dir/$choice"
+    
+    # If directory, cd into it
+    if [ -d "$fullpath" ]; then
+        dir="$fullpath"
+    # If file, open it
+    elif [ -f "$fullpath" ]; then
+        xdg-open "$fullpath"
+        exit
+    fi
+done
