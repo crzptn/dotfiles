@@ -4,32 +4,32 @@ set -euo pipefail
 
 build_dwm() {
   echo "Building dwm..."
-  make -C .dwm
+  make -C dwm
 }
 
 build_dwmblocks() {
   echo "Building dwmblocks..."
-  make -C .dwmblocks
+  make -C dwmblocks
 }
 
 build_dmenu() {
   echo "Building dmenu..."
-  make -C .dmenu
+  make -C dmenu
 }
 
 install_dwm() {
   echo "Installing dwm..."
-  sudo make -C .dwm install
+  sudo make -C dwm install
 }
 
 install_dwmblocks() {
   echo "Installing dwmblocks..."
-  sudo make -C .dwmblocks install
+  sudo make -C dwmblocks install
 }
 
 install_dmenu() {
   echo "Installing dmenu..."
-  sudo make -C .dmenu install
+  sudo make -C dmenu install
 }
 
 main() {
