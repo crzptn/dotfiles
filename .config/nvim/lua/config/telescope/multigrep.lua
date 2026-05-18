@@ -18,7 +18,7 @@ local function command_generator(prompt)
 		table.insert(args, pieces[2])
 	end
 
-	return vim.tbl_flatten({
+	return vim.iter({
 		"rg",
 		"--color=never",
 		"--no-heading",
@@ -27,7 +27,7 @@ local function command_generator(prompt)
 		"--column",
 		"--smart-case",
 		args,
-	})
+	}):flatten():totable()
 end
 
 function M.live_multigrep(opts)

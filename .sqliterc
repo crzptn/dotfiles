@@ -1,3 +1,4 @@
 .mode table
 .header on
 .separator "|"
+.timer on

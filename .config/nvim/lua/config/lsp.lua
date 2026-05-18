@@ -76,11 +76,11 @@ local function on_init(client)
 end
 
 local servers = {
-	clangd = {
-		cmd = { "clangd" },
-		filetypes = { "c", "cpp" },
-		root_markers = { ".git" },
-	},
+	-- clangd = {
+	-- 	cmd = { "clangd" },
+	-- 	filetypes = { "c", "cpp" },
+	-- 	root_markers = { ".git" },
+	-- },
 	kotlin_lsp = {
 		cmd = { "kotlin-lsp" },
 		filetypes = { "kotlin" },

@@ -67,6 +67,8 @@ eval "$(goenv init -)"
 
 . "$HOME/.cargo/env"
 
+export PATH="$HOME/dotfiles/dmenu/scripts:$PATH"
+
 
 # keys
 

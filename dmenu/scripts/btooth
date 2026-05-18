@@ -1,23 +1,27 @@
 #!/usr/bin/env bash
 
-# bt-manage-dmenu.sh
-# choose device → choose action (connect / disconnect / forget / pair if needed)
+# simple bluetooth dmenu manager (fixed pairing + connect flow)
 
-set -euo pipefail
+set -u
 
 DMENU="${DMENU_CMD:-dmenu -i -l 12}"
 
 command -v bluetoothctl >/dev/null 2>&1 || {
-  printf 'bluetoothctl not found\n' >&2
+  echo "bluetoothctl not found" >&2
   exit 1
 }
 
 bluetoothctl power on >/dev/null 2>&1 || true
 
-is_connected() { bluetoothctl info "$1" 2>/dev/null | grep -q '^Connected: yes$'; }
-is_paired()    { bluetoothctl info "$1" 2>/dev/null | grep -q '^Paired: yes$'; }
+is_connected() {
+  bluetoothctl info "$1" 2>/dev/null | grep -q '^Connected: yes$'
+}
 
-# short scan
+is_paired() {
+  bluetoothctl paired-devices | grep -q "$1"
+}
+
+# scan briefly
 bluetoothctl scan on >/dev/null 2>&1 &
 scan_pid=$!
 sleep 4
@@ -44,7 +48,7 @@ device_choice="$(printf '%s\n' "$devices" | eval "$DMENU -p 'Bluetooth device:'"
 
 mac="${device_choice%% | *}"
 
-# build actions
+# actions
 actions="connect disconnect forget"
 if ! is_paired "$mac"; then
   actions="pair $actions"
@@ -55,16 +59,21 @@ action="$(printf '%s\n' $actions | eval "$DMENU -p 'Action:'")"
 
 case "$action" in
   pair)
-    bluetoothctl pair "$mac"
+    bluetoothctl pair "$mac" || true
     ;;
+
   connect)
-    is_paired "$mac" || bluetoothctl pair "$mac"
+    if ! is_paired "$mac"; then
+      bluetoothctl pair "$mac" || true
+    fi
     bluetoothctl trust "$mac" >/dev/null 2>&1 || true
     bluetoothctl connect "$mac"
     ;;
+
   disconnect)
     bluetoothctl disconnect "$mac"
     ;;
+
   forget)
     bluetoothctl remove "$mac"
     ;;

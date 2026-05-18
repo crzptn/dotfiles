@@ -1,7 +1,13 @@
 return {
- 	{
- 		"MeanderingProgrammer/render-markdown.nvim",
- 		ft = "markdown",
- 		opts = {},
- 	},
+	{
+		"MeanderingProgrammer/render-markdown.nvim",
+		event = "BufReadPost",
+		ft = "markdown",
+		opts = {
+			debounce = 100,
+			hover = {
+				enabled = false,
+			},
+		},
+	},
 }

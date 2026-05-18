@@ -15,6 +15,8 @@ local function confirm_tabclose()
 	vim.cmd("tabclose")
 end
 
+print("hello wolr")
+
 vim.keymap.set("n", "dn", vim.diagnostic.open_float, { noremap = true, silent = true })
 vim.keymap.set("n", "gd", vim.lsp.buf.definition, { noremap = true, silent = true })
 vim.keymap.set("n", "tx", confirm_tabclose, { noremap = true, silent = true })
