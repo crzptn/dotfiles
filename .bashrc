@@ -16,6 +16,11 @@ if [ -f /etc/bashrc ]; then
     . /etc/bashrc
 fi
 
+# user's global environment variables ( private keys, etc )
+if [ -f $HOME/env.sh ]; then
+    . $HOME/env.sh
+fi
+
 # User specific environment
 if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]; then
     PATH="$HOME/.local/bin:$HOME/bin:$PATH"
@@ -43,6 +48,7 @@ export MANPAGER="nvim +Man!"
 export EDITOR=nvim
 
 export PATH="$HOME/bin:$PATH"
+export PATH="$GOPATH/bin/:$PATH"
 export HISTCONTROL="erasedups"
 
 # aliases
@@ -50,6 +56,7 @@ alias vim='nvim'
 alias htop='btop'
 alias la='ls -a'
 alias l='ls'
+alias rm='rm -i'
 alias open="xdg-open"
 alias trash="gio trash"
 alias tx="tmux"

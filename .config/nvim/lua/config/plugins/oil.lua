@@ -5,9 +5,6 @@ return {
 		keys = {
 			{ "<C-n>", "<cmd>Oil<cr>", desc = "Open parent directory" },
 		},
-		dependencies = {
-			"nvim-mini/mini.icons",
-		},
 		opts = {
 			view_options = {
 				show_hidden = true,

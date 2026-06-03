@@ -52,14 +52,18 @@ return {
 				function()
 					local builtin = require("telescope.builtin")
 					local actions = require("telescope.actions")
+
 					builtin.find_files({
-						attach_mappings = function(_, map)
-							map("i", "<CR>", actions.select_tab)
+						attach_mappings = function(prompt_bufnr)
+							actions.select_default:replace(function()
+								actions.select_tab(prompt_bufnr)
+							end)
+
 							return true
 						end,
 					})
 				end,
-				desc = "Find files",
+				desc = "Find files"
 			},
 		},
 		config = function()
