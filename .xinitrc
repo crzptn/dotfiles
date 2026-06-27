@@ -22,6 +22,7 @@ systemctl --user restart xdg-desktop-portal
 
 dwmblocks &
 
+lxpolkit &
 #/usr/bin/opensnitch-ui &
 # Start dwm
 exec dwm

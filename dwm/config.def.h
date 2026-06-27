@@ -73,7 +73,8 @@ static const char *bravecmd[] = { "brave-browser", NULL};
 static const char *filecmd[] = {"nautilus",NULL};
 static const char *alsacmd[] = { "kitty", "-e", "alsamixer", NULL };
 static const char *scrotcmd[] = { "scrot", "-s", NULL };
-static const char *signalcmd[] = {"flatpak" ,"run","org.signal.Signal", NULL};
+// static const char *signalcmd[] = {"flatpak" ,"run","org.signal.Signal", NULL};
+static const char *spotifycmd[] = {"flatpak" ,"run","com.spotify.Client", NULL};
 
 /* volume  commands*/
 static const char *upvol[]   = { "/usr/bin/pactl", "set-sink-volume", "0", "+5%",     NULL };
@@ -93,12 +94,12 @@ static const char *mutemic[] = { "/usr/bin/pactl", "set-source-mute",   "@DEFAUL
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
-	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
-  { MODKEY|ControlMask,           XK_t,      spawn,          {.v = kittycmd } },
+	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = kittycmd} },
+  { MODKEY|ControlMask,           XK_t,      spawn,          {.v = termcmd } },
   { MODKEY|ControlMask,           XK_b,      spawn,          {.v = bravecmd } },
   { MODKEY|ControlMask,           XK_f,      spawn,          {.v = filecmd } },
   { MODKEY|ControlMask,           XK_v,      spawn,          {.v = alsacmd } },
-  { MODKEY|ControlMask,           XK_s,      spawn,          {.v = signalcmd } },
+  { MODKEY|ControlMask,           XK_s,      spawn,          {.v = spotifycmd } },
   { MODKEY|ControlMask,           XK_p,      spawn,          {.v = scrotcmd } },
   { 0,                      		  XK_F5,     spawn, 				 {.v = downbacklight } },
   { 0,                      		  XK_F6,     spawn, 				 {.v = upbacklight } },
